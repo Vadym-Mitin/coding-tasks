@@ -2,6 +2,7 @@ package com.example.script.runner.services;
 
 import com.example.script.runner.model.VulnerabilityScript;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ public class ScriptUtils {
      * the dependent script
      */
     public List<Integer> computeScriptsOrder(List<VulnerabilityScript> scripts) {
+        Assert.notNull(scripts, "The scriptIds list must not be null");
+
         List<Integer> result = new ArrayList<>();
 
         for (VulnerabilityScript script : scripts) {

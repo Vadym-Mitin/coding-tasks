@@ -1,13 +1,15 @@
 package com.example.script.runner.services;
 
 import com.example.script.runner.model.VulnerabilityScript;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ScriptUtilsTest {
@@ -41,7 +43,7 @@ class ScriptUtilsTest {
 
         List<Integer> expected = List.of(2, 3, 4, 1, 6, 5, 7);
 
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -49,6 +51,13 @@ class ScriptUtilsTest {
         List<Integer> actual = scriptUtils.computeScriptsOrder(containsDuplicates);
 
         List<Integer> expected = List.of(2, 3, 4, 1, 6, 5, 7);
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void scriptListMustNotBeNull() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> scriptUtils.computeScriptsOrder(null));
+
+        assertEquals("The scriptIds list must not be null", exception.getMessage());
     }
 }
