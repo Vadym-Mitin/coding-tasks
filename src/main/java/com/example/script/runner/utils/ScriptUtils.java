@@ -2,11 +2,12 @@ package com.example.script.runner.utils;
 
 import com.example.script.runner.model.VulnerabilityScript;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @Component
 public class ScriptUtils {
@@ -21,32 +22,22 @@ public class ScriptUtils {
      * the dependent script
      */
     public List<Integer> computeScriptsOrder(List<VulnerabilityScript> scripts) {
-        Assert.notNull(scripts, "The scriptIds list must not be null");
+        return ofNullable(scripts)
+                .map(this::calculateScriptIDsOrder)
+                .orElse(Collections.emptyList());
+    }
 
+    private List<Integer> calculateScriptIDsOrder(List<VulnerabilityScript> scripts) {
         List<Integer> result = new ArrayList<>();
 
         for (VulnerabilityScript script : scripts) {
+            ofNullable(script.dependencies())
+                    .ifPresent(result::addAll);
 
-            Optional.ofNullable(script.dependencies())
-                    .ifPresent(l -> addAndSkipDuplicates(result, l));
-
-            addAndSkipDuplicate(result, script.scriptId());
+            result.add(script.scriptId());
         }
 
         return result;
     }
-
-    private void addAndSkipDuplicates(List<Integer> list, List<Integer> additionalList) {
-        for (Integer i : additionalList) {
-            addAndSkipDuplicate(list, i);
-        }
-
-    }
-
-    private static void addAndSkipDuplicate(List<Integer> list, int i) {
-        if (!list.contains(i))
-            list.add(i);
-    }
-
 
 }

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import java.util.List;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class ScriptUtilsTest {
@@ -22,17 +22,17 @@ class ScriptUtilsTest {
     @BeforeAll
     public void initScripts() {
         correctList = List.of(
-                new VulnerabilityScript(1, List.of(2, 3, 4)),
-                new VulnerabilityScript(5, List.of(6)),
-                new VulnerabilityScript(7, List.of())
+                new VulnerabilityScript(1, List.of(2, 3)),
+                new VulnerabilityScript(4, List.of(5)),
+                new VulnerabilityScript(6, EMPTY_LIST)
         );
 
         containsDuplicates = List.of(
-                new VulnerabilityScript(1, List.of(2, 3, 4)),
-                new VulnerabilityScript(5, List.of(6)),
-                new VulnerabilityScript(7, List.of()),
-                new VulnerabilityScript(3, List.of()),
-                new VulnerabilityScript(2, List.of(7))
+                new VulnerabilityScript(1, List.of(2, 3)),
+                new VulnerabilityScript(4, List.of(5)),
+                new VulnerabilityScript(6, EMPTY_LIST),
+                new VulnerabilityScript(3, null),
+                new VulnerabilityScript(2, List.of(5))
         );
 
     }
@@ -41,7 +41,7 @@ class ScriptUtilsTest {
     public void shouldComputeRightScriptOrder() {
         List<Integer> actual = scriptUtils.computeScriptsOrder(correctList);
 
-        List<Integer> expected = List.of(2, 3, 4, 1, 6, 5, 7);
+        List<Integer> expected = List.of(2, 3, 1, 5, 4, 6);
 
         assertEquals(expected, actual);
     }
@@ -50,14 +50,14 @@ class ScriptUtilsTest {
     public void shouldComputeRightScriptOrderWithDuplicates() {
         List<Integer> actual = scriptUtils.computeScriptsOrder(containsDuplicates);
 
-        List<Integer> expected = List.of(2, 3, 4, 1, 6, 5, 7);
+        List<Integer> expected = List.of(2, 3, 1, 5, 4, 6, 3, 5, 2);
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void scriptListMustNotBeNull() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> scriptUtils.computeScriptsOrder(null));
 
-        assertEquals("The scriptIds list must not be null", exception.getMessage());
+    @Test
+    public void handleNullableScripList() {
+        List<Integer> scriptsOrder = scriptUtils.computeScriptsOrder(null);
+        assertEquals(EMPTY_LIST, scriptsOrder);
     }
 }
