@@ -1,4 +1,4 @@
-package com.example.script.runner.services;
+package com.example.script.runner.utils;
 
 import com.example.script.runner.model.VulnerabilityScript;
 import org.springframework.stereotype.Component;

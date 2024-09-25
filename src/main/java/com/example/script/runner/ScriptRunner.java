@@ -1,6 +1,9 @@
-package com.example.script.runner.services;
+package com.example.script.runner;
 
 import com.example.script.runner.model.VulnerabilityScript;
+import com.example.script.runner.services.ExecutionService;
+import com.example.script.runner.services.ScriptRepository;
+import com.example.script.runner.utils.ScriptUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
