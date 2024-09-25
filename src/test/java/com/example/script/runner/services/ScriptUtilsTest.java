@@ -12,7 +12,9 @@ import java.util.List;
 @TestInstance(Lifecycle.PER_CLASS)
 class ScriptUtilsTest {
 
+    private final ScriptUtils scriptUtils = new ScriptUtils();
     public List<VulnerabilityScript> correctList;
+    public List<VulnerabilityScript> containsDuplicates;
 
 
     @BeforeAll
@@ -20,24 +22,33 @@ class ScriptUtilsTest {
         correctList = List.of(
                 new VulnerabilityScript(1, List.of(2, 3, 4)),
                 new VulnerabilityScript(5, List.of(6)),
-                new VulnerabilityScript(7, List.of()));
+                new VulnerabilityScript(7, List.of())
+        );
 
+        containsDuplicates = List.of(
+                new VulnerabilityScript(1, List.of(2, 3, 4)),
+                new VulnerabilityScript(5, List.of(6)),
+                new VulnerabilityScript(7, List.of()),
+                new VulnerabilityScript(3, List.of()),
+                new VulnerabilityScript(2, List.of(7))
+        );
 
     }
 
     @Test
     public void shouldComputeRightScriptOrder() {
-        ScriptUtils scriptUtils = new ScriptUtils();
+        List<Integer> actual = scriptUtils.computeScriptsOrder(correctList);
 
         List<Integer> expected = List.of(2, 3, 4, 1, 6, 5, 7);
 
-        List<Integer> actual = scriptUtils.computeScriptsOrder(correctList);
+        Assertions.assertEquals(expected, actual);
+    }
 
-        System.out.println("***********======= expected: ");
-        System.out.println(expected);
-        System.out.println("***********======= actual: ");
-        System.out.println(actual);
+    @Test
+    public void shouldComputeRightScriptOrderWithDuplicates() {
+        List<Integer> actual = scriptUtils.computeScriptsOrder(containsDuplicates);
 
+        List<Integer> expected = List.of(2, 3, 4, 1, 6, 5, 7);
         Assertions.assertEquals(expected, actual);
     }
 }

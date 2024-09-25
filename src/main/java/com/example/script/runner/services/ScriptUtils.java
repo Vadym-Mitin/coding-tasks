@@ -25,12 +25,25 @@ public class ScriptUtils {
         for (VulnerabilityScript script : scripts) {
 
             Optional.ofNullable(script.dependencies())
-                    .ifPresent(result::addAll);
+                    .ifPresent(l -> addAndSkipDuplicates(result, l));
 
-            result.add(script.scriptId());
+            addAndSkipDuplicate(result, script.scriptId());
         }
 
         return result;
     }
+
+    private void addAndSkipDuplicates(List<Integer> list, List<Integer> additionalList) {
+        for (Integer i : additionalList) {
+            addAndSkipDuplicate(list, i);
+        }
+
+    }
+
+    private static void addAndSkipDuplicate(List<Integer> list, int i) {
+        if (!list.contains(i))
+            list.add(i);
+    }
+
 
 }
